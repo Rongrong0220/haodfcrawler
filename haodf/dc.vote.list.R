@@ -6,20 +6,20 @@ library(stringr)
 library(stringi)
 
 #获取医生的id和医生总数
-input_file = 'haodf/Doclist.mobile.0423.af.unique.csv' 
+input_file = '/home/weirain/Projects/HC/Doclist.mobile.utf8.0124.csv' 
 doclist.all <- read.csv(input_file, header = TRUE,
                         stringsAsFactors = FALSE)
 doclist.all <- unique(doclist.all)
 doctor.count <- nrow(doclist.all)
 
-#随机�?100个医生进行测�?
+#随机取100个医生进行测试
 #set.seed(1)
 #x <- sample(c(1:12473), size = 10)
 #x <- 9691
 #result.data <- list()
 
 time.record <- list() 
-# i表示第i位医�? 
+# i表示第i位医生 
 #for(i in 1:3){
 for(i in 1: doctor.count){
     time.record[[i]] <- Sys.time()
@@ -30,10 +30,10 @@ for(i in 1: doctor.count){
     #在表中加上医生的姓名和医生的id，以便之后的表间关联
     vote.list.1$doctor.name <- doclist.all$name[i] 
     vote.list.1$doctor.id <- doctor.id 
-    #获取每个医生的患者投票列表连�?
+    #获取每个医生的患者投票列表连接
     dc.page.info <- curl_fetch_memory(paste0('https:',doclist.all$url[i]))
     dc.page = try(stri_conv(rawToChar(dc.page.info$content),'GBK', 'UTF-8'))
-    #以防网络原因，设置重试次�?
+    #以防网络原因，设置重试次数
     try_time2 = 0
     while(class(dc.page) == 'try-error'){
         dc.page.info <- curl_fetch_memory(paste0('https:',doclist.all$url[i]))
@@ -83,7 +83,7 @@ for(i in 1: doctor.count){
     #outfile1 = file("test.0416.html")
     #writeLines(dc.info, outfile1)
     #close(outfile1)
-    #以防网络原因，设置重试次�?
+    #以防网络原因，设置重试次数
     try_time = 0
     while(class(dc.info) == 'try-error'){
         dc.vote.info <- curl_fetch_memory(vote.list.html)
@@ -133,13 +133,13 @@ for(i in 1: doctor.count){
     }
     
     for(k in 0:1){
-        #找到投票列表的第一页并获取总页�?
+        #找到投票列表的第一页并获取总页数
         print(sprintf("Crawling doctor's %s of 2 years ago", k))
         vote.start.url <- sprintf('https://m.haodf.com/ndoctor/ajaxshowlist?is2YearsAgo=%s&diseasename=%%E5%%85%%A8%%E9%%83%%A8&diseasekey=all&doctorPinyin=%s&doctorId=%s&pinyinRef=%s&sn=&diseaseId=&num=1&size=10', k, doc.pinyin, doc.id.number, doc.pinyin)
         # article.start.url <- 'https://m.haodf.com/touch/doctor/loadmorearticle?id=DE4r0BCkuHzduSEy9dicdu-554j7S&p=1'
         req.1 <- curl_fetch_memory(vote.start.url)
         df1 = try(rawToChar(req.1$content) %>% fromJSON())
-        #以防网络原因，设置重试次�?
+        #以防网络原因，设置重试次数
         try_time = 0
         while(class(df1) == 'try-error'){
             req.1 <- curl_fetch_memory(vote.start.url)
@@ -160,7 +160,7 @@ for(i in 1: doctor.count){
         print(sprintf("This doctor has total %s pages!",pages))
         vote.list.url.all <- ''
         #outfile1 = file(sprintf("doc.mobile_%s.html", i), encoding = 'UTF8', open = 'a+')
-        #j表示该医生的咨询总页�?
+        #j表示该医生的咨询总页数
         
         #outfile1 = file("test1.0416.html")
         
