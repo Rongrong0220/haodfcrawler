@@ -6,13 +6,13 @@ library(stringr)
 library(stringi)
 
 #获取医生的id和医生总数
-input_file = 'haodf/Doclist.mobile.0423.af.unique.csv' 
+input_file = '/home/weirain/Projects/HC/Doclist.mobile.utf8.0423.csv' 
 doclist.all <- read.csv(input_file, header = TRUE,
                         stringsAsFactors = FALSE)
 #doclist.all <- unique(doclist.all)
 doctor.count <- nrow(doclist.all)
 
-#随机�?100个医生进行测�?
+#随机取100个医生进行测试
 #set.seed(1)
 #x <- sample(c(1:12473), size = 10)
 #print(x)
@@ -20,7 +20,7 @@ doctor.count <- nrow(doclist.all)
 #result.data <- list()
 
 time.record <- list() 
-# i表示第i位医�? 
+# i表示第i位医生 
 for(i in 1:doctor.count){
 #for(i in x){
     #i = 1
@@ -32,7 +32,7 @@ for(i in 1:doctor.count){
     #在表中加上医生的姓名和医生的id，以便之后的表间关联
     gift.list.1$doctor.name <- doclist.all$name[i] 
     gift.list.1$doctor.id <- doclist.all$doctor.id[i]
-    #找到礼物列表的第一页并获取总页�?
+    #找到礼物列表的第一页并获取总页数
     gift.start.url <- sprintf('http://www.haodf.com/api/doctor/%s/ajaxgetpresentlist.htm?p=1', doclist.all$doctor.id[i])
     #gift.start.url <- 'http://www.haodf.com/api/doctor/DE4r0BCkuHzdehbX-b8hoLSNZn1O5/ajaxgetpresentlist.htm?p=1'
     #pages <- read_html(gift.start.url) %>%
@@ -57,13 +57,13 @@ for(i in 1:doctor.count){
         }
     }
     
-    pages <- str_extract(df1, pattern = '(?<=�?).+(?=�?)') %>%
+    pages <- str_extract(df1, pattern = '(?<=共).+(?=页)') %>%
         str_extract('\\d+')
     try_time1 = 1
     while (is.na(pages)) {
         req.1 <- curl_fetch_memory(gift.start.url)
         df1 = try(stri_conv(rawToChar(req.1$content), 'GBK', 'UTF-8'))
-        pages <- str_extract(df1, pattern = '(?<=�?).+(?=�?)') %>%
+        pages <- str_extract(df1, pattern = '(?<=共).+(?=页)') %>%
             str_extract('\\d+')
         print(sprintf("This is the %s time for retrying...", try_time1))
         try_time1 = try_time1 + 1
@@ -101,7 +101,7 @@ for(i in 1:doctor.count){
     }
     
     gift.time <- unlist(str_extract_all(gift.list.all, pattern = '时间：[0-9]{4}-[0-9]{2}-[0-9]{2}')) %>%
-        gsub('时间�?', '', .) 
+        gsub('时间：', '', .) 
      
     if(length(gift.time) == 0){
         next()
@@ -113,7 +113,7 @@ for(i in 1:doctor.count){
         
     dc.gift.list <- data.frame(gift.list.1, stringsAsFactors = F)
     
-    write.table(dc.gift.list, 'doc.gift.list.csv', row.names = F, col.names = F, append = T, sep = ',', na = '')   
+    write.table(dc.gift.list, 'doc.gift.list.utf8.csv', row.names = F, col.names = F, append = T, sep = ',', na = '')   
         #result.data[[i]] <- dc.article.list
 }
 
