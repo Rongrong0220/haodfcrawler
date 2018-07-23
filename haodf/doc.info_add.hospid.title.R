@@ -1,4 +1,4 @@
-#之前漏爬了医生的职称和所在医院的id，补�?
+#之前漏爬了医生的职称和所在医院的id，补上
 library(curl)
 library(jsonlite)
 library(tidyverse)
@@ -7,21 +7,21 @@ library(stringr)
 #library(stringi)
 
 #获取医生的id和医生总数
-input_file = 'haodf/Doclist.mobile.0423.af.unique.csv' 
+input_file = '/home/rong/Crawling/Doclist.mobile.0423.utf8.csv' 
 doclist.all <- read.csv(input_file, header = TRUE,
                         stringsAsFactors = FALSE)
 #doclist.all <- unique(doclist.all)
 doctor.count <- nrow(doclist.all)
 
-#随机�?100个医生进行测�?
+#随机取100个医生进行测试
 #set.seed(1)
 #x <- sample(c(1:12473), size = 10)
 #x <- 9691
 #result.data <- list()
 
 time.record <- list() 
-# i表示第i位医�? 
-for(i in 1:doctor.count){
+# i表示第i位医生 
+for(i in 498:498){
 #for(i in 12391:doctor.count){
   time.record[[i]] <- Sys.time()
   print(sprintf("Crawlering No.%s doctor at %s.", i, time.record[[i]]))  
@@ -77,7 +77,7 @@ for(i in 1:doctor.count){
   }
   
   
-  #获取医生的职�?
+  #获取医生的职称
   hosp.info.list.1$doc.title <- hosp.inf.source.html %>%
     html_node(xpath = xpath.doc.title) %>%
     trimws()
@@ -100,7 +100,7 @@ for(i in 1:doctor.count){
   hosp.info <- data.frame(hosp.info.list.1, stringsAsFactors = F) 
   
   
-  write.table(hosp.info, 'doc.info.0509.csv', row.names = F, col.names = F, append = T, sep = ',', na = '')  
+  write.table(hosp.info, '/home/rong/Crawling/doc.info.utf8.0508.csv', row.names = F, col.names = F, append = T, sep = ',', na = '')  
   Sys.sleep(5)
 }
 
