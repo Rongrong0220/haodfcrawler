@@ -1,8 +1,8 @@
 
-# 先定位到文件�?
-root_dir <- "haodf/" 
+# 先定位到文件夹
+root_dir <- "/haodf" 
 
-# 后面方便发送邮�?
+# 后面方便发送邮件
 date_today <- Sys.Date()
 work_dir_today <- sprintf("%sdaily_data_%s", root_dir, gsub('-', '', date_today))
 setwd(work_dir_today)
@@ -10,7 +10,7 @@ setwd(work_dir_today)
 
 library(mailR)
 
-mail.text <- sprintf("Hi xx, \n    这是今天的数�?(来自云服务器).请查�?.\n%s", date_today)
+mail.text <- sprintf("Hi xxx, \n    这是今天的数据(来自云服务器).请查收.\n%s", date_today)
 
 
 result.files = list.files(pattern = "daily_.+.gbk.csv")
